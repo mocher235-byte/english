@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>金名魔法學院 - 英語所有格代名詞重點攻略</title>
+    <title>金名魔法學院 - 英語所有格代名詞攻略</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -107,6 +107,7 @@
             100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
         }
 
+        /* 表格微調 */
         table {
             border: 2px solid #5d2906;
         }
@@ -121,6 +122,7 @@
 </head>
 <body class="p-4 md:p-8">
 
+    <!-- 頂部標題區 -->
     <header class="text-center mb-12 relative">
         <div class="inline-block relative">
             <h1 class="text-4xl md:text-6xl font-bold magic-font text-yellow-400 mb-2 drop-shadow-[0_0_10px_rgba(236,201,75,0.8)]">
@@ -134,12 +136,13 @@
 
     <main class="max-w-6xl mx-auto space-y-12">
         
+        <!-- 核心內容：代換法則 -->
         <section id="knowledge-base" class="scroll-container p-6 md:p-10 mx-4">
             <div class="mb-8">
                 <h2 class="text-3xl font-bold border-b-4 border-brown-600 pb-2 mb-6">📜 重點攻略：所有格代名詞</h2>
                 
                 <div class="formula-card p-6 text-center shadow-lg">
-                    <p class="text-xl text-gray-700 mb-2 font-bold">智慧導師筆記：當我們要提到「誰的東西」且不想重複名詞時：</p>
+                    <p class="text-xl text-gray-700 mb-2 font-bold">當我們要提到「誰的東西」且不想重複名詞時：</p>
                     <div class="text-3xl md:text-4xl font-bold text-purple-800 flex flex-wrap justify-center items-center gap-4">
                         <span class="bg-purple-100 px-4 py-2 rounded">所有格</span>
                         <span>+</span>
@@ -163,23 +166,24 @@
                         </tr>
                     </thead>
                     <tbody id="pronounTableBody">
-                        <!-- JS 動態生成 -->
+                        <!-- 由 JS 動態生成內容 -->
                     </tbody>
                 </table>
             </div>
             
             <div class="mt-8 grid md:grid-cols-2 gap-4">
                 <div class="bg-white/60 p-4 rounded-xl border-l-8 border-yellow-500">
-                    <p class="font-bold text-amber-900"><i class="fas fa-lightbulb"></i> 基礎範例：</p>
-                    <p class="italic text-gray-700">"This is my book, not <span class="text-red-600 font-bold underline">yours</span>." (yours = your book)</p>
+                    <p class="font-bold text-amber-900"><i class="fas fa-lightbulb"></i> 常見範例：</p>
+                    <p class="italic text-gray-700">"This is my pen, not <span class="text-red-600 font-bold underline">yours</span>." (yours = your pen)</p>
                 </div>
                 <div class="bg-white/60 p-4 rounded-xl border-l-8 border-purple-500">
                     <p class="font-bold text-purple-900"><i class="fas fa-user-graduate"></i> 名字範例：</p>
-                    <p class="italic text-gray-700">"My father's car is blue, and <span class="text-red-600 font-bold underline">Tony's</span> is red." (Tony's = Tony's car)</p>
+                    <p class="italic text-gray-700">"Tom's dog is cute, and <span class="text-red-600 font-bold underline">Mary's</span> is smart." (Mary's = Mary's dog)</p>
                 </div>
             </div>
         </section>
 
+        <!-- 實戰演練區 -->
         <section class="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20 shadow-2xl">
             <div class="flex items-center gap-4 mb-8">
                 <div class="bg-yellow-400 p-3 rounded-full text-blue-900 text-2xl">
@@ -189,7 +193,7 @@
             </div>
 
             <div id="quiz-container" class="space-y-6">
-                <!-- JS 動態生成 -->
+                <!-- 由 JS 動態生成練習題 -->
             </div>
 
             <div class="mt-8 flex justify-between items-center bg-black/30 p-4 rounded-xl">
@@ -209,6 +213,7 @@
     </footer>
 
     <script>
+        // 對照表資料
         const pairedData = [
             { 
                 left: { sub: 'I (我)', poss: 'my', pron: 'mine' }, 
@@ -227,19 +232,19 @@
                 right: { sub: 'Tom', poss: "Tom's", pron: "Tom's" } 
             },
             { 
-                left: { sub: 'it (它)', poss: 'its', pron: 'its' }, 
+                left: { sub: 'it (牠/它)', poss: 'its', pron: 'its' }, 
                 right: { sub: 'students', poss: "students'", pron: "students'" } 
             }
         ];
 
-        // 重新編寫題目：使用國中小 1200 單字，情境生活化
+        // 國中小 1200 單字範圍練習題
         const quizDataRaw = [
-            { q: "My sister is short, but _______ is tall.", options: ["yours", "you"], a: "yours", hint: "代換「你的妹妹/姐姐」(your sister)。" },
-            { q: "This is my pencil. Where is _______?", options: ["his", "him"], a: "his", hint: "代換「他的鉛筆」(his pencil)。" },
-            { q: "Our teacher is very kind, and _______ is kind, too.", options: ["Mary's", "Mary"], a: "Mary's", hint: "代換「Mary 的老師」。" },
-            { q: "Is this your box? No, it's _______.", options: ["hers", "she"], a: "hers", hint: "這是「她的」盒子。" },
-            { q: "Their room is big, but _______ is small.", options: ["ours", "our"], a: "ours", hint: "代換「我們的房間」。" },
-            { q: "Whose dog is cute? _______ is very cute!", options: ["Mine", "Me"], a: "Mine", hint: "「我的(狗)」非常可愛。" }
+            { q: "My bag is heavy, but _______ is light.", options: ["his", "him"], a: "his", hint: "代換「他的書包」(his bag)。" },
+            { q: "Your teacher is tall, and _______ is short.", options: ["Mary's", "Mary"], a: "Mary's", hint: "代換「Mary 的老師」(Mary's teacher)。" },
+            { q: "Whose ruler is this? It is _______.", options: ["mine", "my"], a: "mine", hint: "這是「我的」(my ruler)。" },
+            { q: "Our classroom is clean, but _______ is dirty.", options: ["theirs", "their"], a: "theirs", hint: "代換「他們的教室」(their classroom)。" },
+            { q: "Is this your sister's bike? No, it's _______.", options: ["mine", "me"], a: "mine", hint: "這是「我的」腳踏車。" },
+            { q: "Their house is big, but _______ is small.", options: ["ours", "our"], a: "ours", hint: "代稱「我們的房子」。" }
         ];
 
         let currentScore = 0;
@@ -287,9 +292,8 @@
             container.innerHTML = '';
             answeredQuestions.clear();
             
-            // 題目順序保持固定，不再進行隨機排序
-            // shuffledQuiz = [...quizDataRaw].sort(() => Math.random() - 0.5); 
-            shuffledQuiz = [...quizDataRaw]; 
+            // 隨機排序題目
+            shuffledQuiz = [...quizDataRaw].sort(() => Math.random() - 0.5);
             
             shuffledQuiz.forEach((item, idx) => {
                 const div = document.createElement('div');
@@ -336,7 +340,7 @@
                 answeredQuestions.add(idx);
                 btn.classList.add('correct');
                 placeholder.innerText = selectedOpt;
-                feedback.innerHTML = `<i class="fas fa-check-circle"></i> 答對了！掌握得很棒。`;
+                feedback.innerHTML = `<i class="fas fa-check-circle"></i> 答對了！重點掌握成功。`;
                 feedback.classList.add('text-green-400');
                 
                 const group = document.getElementById(`options-group${idx}`);
@@ -348,7 +352,7 @@
                 createSparkles(btn);
             } else {
                 btn.classList.add('wrong');
-                feedback.innerHTML = `<i class="fas fa-times-circle"></i> 再試一次！導師提示：${shuffledQuiz[idx].hint}`;
+                feedback.innerHTML = `<i class="fas fa-times-circle"></i> 再試一次！提示：${shuffledQuiz[idx].hint}`;
                 feedback.classList.add('text-red-400');
                 
                 setTimeout(() => {

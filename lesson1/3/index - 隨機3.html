@@ -61,6 +61,7 @@
             vertical-align: middle;
         }
 
+        /* 特殊咒語標籤 */
         .spell-tag {
             background: linear-gradient(to right, #6b46c1, #805ad5);
             color: white;
@@ -126,6 +127,7 @@
             backdrop-filter: blur(10px);
         }
 
+        /* 針對代名詞組合的排版優化 */
         .pronoun-group {
             display: inline-flex;
             flex-direction: column;
@@ -225,8 +227,8 @@
                     </div>
                     <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-purple-500">
                         <span class="spell-tag mb-2 inline-block" style="background: #4a3728">Its (它的 - 所有格)</span>
-                        <p class="text-lg mt-2 font-medium"><span class="bg-yellow-200 px-1">Its</span> tail is long.</p>
-                        <p class="text-gray-500 text-sm italic">它的尾巴很長。</p>
+                        <p class="text-lg mt-2 font-medium"><span class="bg-yellow-200 px-1">Its</span> tail is short.</p>
+                        <p class="text-gray-500 text-sm italic">它的尾巴很短。</p>
                     </div>
                 </div>
             </div>
@@ -241,7 +243,7 @@
                 <h2 class="text-3xl font-bold">禮貌順序：多個人稱在一起</h2>
             </div>
             
-            <p class="text-xl mb-8 text-purple-200">當我們要同時提到「你、他、我」時，請記住這個禮貌規則：</p>
+            <p class="text-xl mb-8 text-purple-200">當我們在句子中同時提到「你、他、我」時，請遵守這個規則：</p>
 
             <div class="grid md:grid-cols-2 gap-8">
                 <!-- 單數 -->
@@ -252,11 +254,11 @@
                         </h4>
                         <div class="h-1 bg-amber-900/20 w-full mb-4"></div>
                         <p class="text-gray-700 text-lg leading-relaxed">
-                            單數的時候，我們要把「我 (I)」放在最後面，這是一種尊重的表現。
+                            單數時，要把「我」放在最後面，這是一種禮貌。
                         </p>
                     </div>
                     <div class="bg-amber-900 text-white p-4 rounded-xl mt-4 font-mono">
-                        <span class="text-yellow-300">You</span>, <span class="text-yellow-300">he</span> and <span class="text-yellow-300">I</span> are students.
+                        <span class="text-yellow-300">You</span>, <span class="text-yellow-300">he</span> and <span class="text-yellow-300">I</span> are good students.
                     </div>
                 </div>
 
@@ -268,11 +270,11 @@
                         </h4>
                         <div class="h-1 bg-amber-900/20 w-full mb-4"></div>
                         <p class="text-gray-700 text-lg leading-relaxed">
-                            複數的時候，我們通常先說「我們 (We)」，然後是對方，最後是他人。
+                            複數時，我們先站出來（我們），然後是你們，最後是他們。
                         </p>
                     </div>
                     <div class="bg-indigo-900 text-white p-4 rounded-xl mt-4 font-mono">
-                        <span class="text-yellow-300">We</span>, <span class="text-yellow-300">you</span> and <span class="text-yellow-300">they</span> go to the park.
+                        <span class="text-yellow-300">We</span>, <span class="text-yellow-300">you</span> and <span class="text-yellow-300">they</span> like movies.
                     </div>
                 </div>
             </div>
@@ -301,43 +303,42 @@
     </footer>
 
     <script>
-        // 核心資料：固定順序的練習題
         const originalQuizData = [
             { 
-                q: "Look! _______ a fat cat in the room.", 
+                q: "Look! _______ a small bird in the tree.", 
                 options: ["It's", "Its"],
                 a: "It's", 
-                hint: "這句話是在說「它是...」，所以要選 It is 的縮寫 It's。" 
+                hint: "這句話是在說「它是...」，所以要用 It is 的縮寫。" 
             },
             { 
-                q: "The dog is hungry. _______ food is here.", 
+                q: "The dog is eating _______ food.", 
                 options: ["it's", "its"],
                 a: "its", 
-                hint: "這裡要說「它的」食物，所以要用所有格 its。" 
+                hint: "這裡是指「它的」食物，所以要用所有格。" 
             },
             { 
-                q: "_______ are good students.", 
-                options: ["You, he and I", "I, you and he", "He, you and I"],
-                a: "You, he and I", 
-                hint: "單數人稱並列時，禮貌順序是「你 -> 他 -> 我」。" 
+                q: "_______ are in the same class.", 
+                options: ["You, she and I", "I, you and she", "She, you and I"],
+                a: "You, she and I", 
+                hint: "單數人稱並列時，禮貌順序是 2-3-1（你、他、我）。" 
             },
             { 
-                q: "_______ like to watch movies.", 
+                q: "_______ go to the park together.", 
                 options: ["You, they and we", "We, you and they", "They, we and you"],
                 a: "We, you and they", 
-                hint: "複數人稱並列時，順序通常是「我們 -> 你們 -> 他們」。" 
+                hint: "複數人稱並列時，順序是 1-2-3（我們、你們、他們）。" 
             },
             { 
-                q: "This is my brother. _______ name is Sam.", 
-                options: ["He", "His"],
-                a: "His", 
-                hint: "這裡要指「他的」名字，要用所有格 His。" 
+                q: "I like that car. _______ color is red.", 
+                options: ["It's", "Its"],
+                a: "Its", 
+                hint: "這裡是指「它的」顏色，要用所有格。" 
             },
             {
-                q: "The nurse is kind. _______ bag is white.",
-                options: ["She", "Her"],
-                a: "Her",
-                hint: "這裡是指女生的「她的」包包，要用 Her。"
+                q: "That is my teacher. _______ name is Mr. White.",
+                options: ["His", "He"],
+                a: "His",
+                hint: "這裡是指「他的」名字，要用所有格。"
             }
         ];
 
@@ -345,15 +346,19 @@
         let score = 0;
         let completedTasks = 0;
 
-        // 初始化練習題：現在移除隨機排序邏輯
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
         function initQuiz() {
             const container = document.getElementById('quiz-container');
             container.innerHTML = '';
             completedTasks = 0;
-            
-            // 重要：移除 shuffle 呼叫，保持原始順序
-            // quizData = shuffle([...originalQuizData]); // 已註釋
-            quizData = [...originalQuizData]; 
+            quizData = shuffle([...originalQuizData]);
 
             quizData.forEach((item, idx) => {
                 const card = document.createElement('div');
@@ -458,7 +463,7 @@
                 <div class="text-center p-10 bg-gradient-to-b from-purple-800 to-indigo-900 border-4 border-yellow-400 rounded-3xl max-w-sm shadow-[0_0_50px_rgba(236,201,75,0.5)]">
                     <div class="text-7xl mb-4">⭐</div>
                     <h3 class="text-3xl font-bold text-yellow-400 mb-2">太棒了！</h3>
-                    <p class="text-white mb-6">你已經掌握了代名詞的魔法規則，繼續加油！</p>
+                    <p class="text-white mb-6">你已經掌握了代名詞的用法，繼續加油！</p>
                     <button onclick="location.reload()" class="bg-yellow-400 hover:bg-yellow-300 text-black px-10 py-3 rounded-full font-bold transition-all transform hover:scale-110">
                         再來一次
                     </button>

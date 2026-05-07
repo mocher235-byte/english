@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>金名魔法學院 - 代名詞冒險地圖 V3.6</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Nova+Script&display=swap');
+
+        :root {
+            --magic-purple: #6b46c1;
+            --magic-gold: #ecc94b;
+            --magic-deep: #1a1a2e;
+            --magic-red: #e53e3e;
+            --magic-green: #38a169;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: #0f172a;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .magic-font { font-family: 'Nova Script', cursive; }
+
+        /* 冒險地圖樣式 */
+        .map-container {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding: 20px 0;
+            scrollbar-width: none;
+        }
+        .map-node {
+            flex: 0 0 120px;
+            text-align: center;
+            position: relative;
+            opacity: 0.4;
+            transition: all 0.5s;
+        }
+        .map-node.active { opacity: 1; transform: scale(1.15); }
+        .map-node.active .node-icon { background: var(--magic-gold); box-shadow: 0 0 25px var(--magic-gold); }
+        .node-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #334155;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            z-index: 10;
+            position: relative;
+        }
+        .map-line {
+            position: absolute;
+            top: 25px;
+            left: 50%;
+            width: 140px;
+            height: 4px;
+            background: #334155;
+            z-index: 0;
+        }
+
+        /* 魔王血條 */
+        .hp-bar {
+            width: 100%;
+            height: 12px;
+            background: #1e293b;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 2px solid #334155;
+        }
+        .hp-fill {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #ef4444, #f87171);
+            transition: width 0.5s ease-out;
+        }
+
+        /* 題目卡片設計 */
+        .quiz-card {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(16px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .option-btn {
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.03);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background: rgba(236, 201, 75, 0.1);
+            border-color: var(--magic-gold);
+            transform: scale(1.02);
+        }
+
+        .option-correct { background: var(--magic-green) !important; border-color: #48bb78 !important; box-shadow: 0 0 15px rgba(56, 161, 105, 0.4); }
+        .option-wrong { background: var(--magic-red) !important; border-color: #f87171 !important; box-shadow: 0 0 15px rgba(229, 62, 62, 0.4); }
+
+        .floating { animation: floating 3s ease-in-out infinite; }
+        @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+        /* 噴泉粒子效果 */
+        .sparkle {
+            position: absolute;
+            pointer-events: none;
+            border-radius: 50%;
+            animation: sparkleAnim 0.8s ease-out forwards;
+            z-index: 100;
+        }
+        @keyframes sparkleAnim {
+            0% { transform: translate(0,0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+        }
+
+        /* 下一題按鈕特效 */
+        .next-btn-glow {
+            animation: nextGlow 2s infinite;
+        }
+        @keyframes nextGlow {
+            0%, 100% { box-shadow: 0 0 5px var(--magic-gold); }
+            50% { box-shadow: 0 0 20px var(--magic-gold); }
+        }
+
+        @media print {
+            .no-print { display: none !important; }
+            #mistake-section { display: block !important; color: black !important; background: white !important; }
+            .mistake-item { border: 1px solid #ccc !important; padding: 15px !important; page-break-inside: avoid; }
+        }
+
+        ::-webkit-scrollbar { height: 6px; width: 6px; }
+        ::-webkit-scrollbar-thumb { background: var(--magic-gold); border-radius: 10px; }
+    </style>
+</head>
+<body class="p-4 md:p-6 bg-slate-950">
+
+    <!-- 頂部冒險進度地圖 -->
+    <header class="max-w-6xl mx-auto mb-8 no-print">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+            <h1 class="text-3xl font-black text-yellow-400 magic-font floating">JingMing Quest</h1>
+            <div class="flex items-center gap-4 bg-black/40 px-6 py-2 rounded-full border border-white/10">
+                <div class="text-left">
+                    <p class="text-[10px] text-gray-400 uppercase tracking-tighter">當前稱號</p>
+                    <p id="player-rank" class="text-sm font-bold text-yellow-500">初級學徒</p>
+                </div>
+                <div class="w-px h-8 bg-white/10"></div>
+                <div class="text-left">
+                    <p class="text-[10px] text-gray-400 uppercase tracking-tighter">魔法經驗</p>
+                    <p id="total-xp" class="text-sm font-bold text-blue-400">0 XP</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="map-container" id="world-map">
+            <!-- 由 JS 生成 10 個區域 -->
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto space-y-8 pb-20">
+        
+        <!-- 怪獸與戰鬥狀態 -->
+        <section class="no-print bg-gradient-to-r from-indigo-950 to-blue-900 rounded-[2rem] p-6 border border-white/10 shadow-2xl relative overflow-hidden">
+            <div class="flex justify-between items-end relative z-10">
+                <div class="text-center w-full max-w-[120px]">
+                    <div id="monster-emoji" class="text-7xl mb-2 floating">👾</div>
+                    <p id="monster-name" class="text-[10px] font-black text-red-400 uppercase tracking-[0.2em]">初級史萊姆</p>
+                </div>
+                <div class="flex-grow px-4 md:px-10">
+                    <div class="flex justify-between text-xs mb-2 text-gray-300 font-black italic">
+                        <span>REGION BOSS HP</span>
+                        <span id="hp-text">10 / 10</span>
+                    </div>
+                    <div class="hp-bar">
+                        <div id="hp-fill" class="hp-fill"></div>
+                    </div>
+                    <div class="mt-5 flex justify-center gap-2 overflow-x-auto py-2" id="pagination-dots"></div>
+                </div>
+                <div class="text-center w-full max-w-[100px] bg-black/30 p-3 rounded-2xl border border-white/5">
+                    <p class="text-[10px] text-gray-500 font-bold">目前進度</p>
+                    <p id="progress-text" class="text-3xl font-black text-yellow-400">1/100</p>
+                </div>
+            </div>
+            <div class="absolute -bottom-10 -left-10 opacity-5 text-[12rem]"><i class="fas fa-dragon"></i></div>
+        </section>
+
+        <!-- 題目區域 -->
+        <div id="quiz-anchor"></div>
+        <section id="quiz-wrapper" class="no-print min-h-[420px]"></section>
+
+        <!-- 錯題報告 -->
+        <section id="mistake-section" class="hidden">
+            <div class="bg-slate-900 border border-red-500/30 p-10 rounded-[3rem]">
+                <div class="flex justify-between items-center mb-8 no-print">
+                    <h2 class="text-3xl font-black text-red-400 flex items-center gap-4">
+                        <i class="fas fa-skull-crossbones"></i> 戰鬥失利記錄
+                    </h2>
+                    <div class="flex gap-3">
+                        <button onclick="window.print()" class="bg-yellow-500 text-black px-6 py-2 rounded-xl font-bold">列印錯題集</button>
+                        <button onclick="toggleMistakeSummary()" class="bg-white/10 text-white px-6 py-2 rounded-xl font-bold">關閉</button>
+                    </div>
+                </div>
+                <div id="mistake-list" class="grid grid-cols-1 gap-6"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center mt-12 py-10 text-gray-500 no-print border-t border-white/5">
+        <button onclick="toggleMistakeSummary()" class="bg-white/5 hover:bg-white/10 px-8 py-3 rounded-full text-sm font-bold transition-all border border-white/10 text-gray-300">
+            <i class="fas fa-history mr-2"></i> 查看修煉記錄與錯題
+        </button>
+        <p class="mt-6 text-[10px] tracking-widest opacity-40 uppercase font-bold">JingMing Quest V3.6 | Adventure Mode</p>
+    </footer>
+
+    <!-- 終點彈窗 -->
+    <div id="celebration-modal" class="fixed inset-0 bg-black/95 hidden z-[100] flex items-center justify-center p-6 no-print">
+        <div class="bg-slate-900 p-16 rounded-[4rem] border-4 border-yellow-400 text-center max-w-xl w-full shadow-[0_0_50px_rgba(236,201,75,0.2)]">
+            <div class="text-9xl mb-8">🎖️</div>
+            <h3 class="text-5xl font-black text-yellow-400 mb-6">全域征服者！</h3>
+            <p class="text-2xl text-gray-300 mb-10 leading-relaxed">你已成功識破 100 個陷阱，<br>成為了英語王國的傳奇大魔導。</p>
+            <div id="final-stats" class="bg-black/40 p-8 rounded-3xl mb-10 border border-white/5"></div>
+            <button onclick="location.reload()" class="bg-yellow-400 text-black px-16 py-5 rounded-full font-black text-2xl hover:bg-yellow-300 transition-all hover:scale-105 active:scale-95 shadow-xl">
+                重啟冒險
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const regions = [
+            { name: "史萊姆草地", emoji: "👾", boss: "黏液怪" },
+            { name: "幽靈之森", emoji: "👻", boss: "迷途幽靈" },
+            { name: "地精礦坑", emoji: "👺", boss: "貪婪地精" },
+            { name: "寒冰湖畔", emoji: "❄️", boss: "雪怪" },
+            { name: "荒蕪沙漠", emoji: "🌵", boss: "仙人掌王" },
+            { name: "機械工廠", emoji: "🤖", boss: "失控組件" },
+            { name: "闇影沼澤", emoji: "🐙", boss: "深淵觸手" },
+            { name: "巨人山谷", emoji: "👹", boss: "岩石巨人" },
+            { name: "熔岩神殿", emoji: "🔥", boss: "地獄獵犬" },
+            { name: "魔王之城", emoji: "🐲", boss: "闇影之龍" }
+        ];
+
+        const pronounData = [
+            { person: '第一人稱單數', sub: 'I', obj: 'me', adj: 'my', pron: 'mine' },
+            { person: '第二人稱單數', sub: 'You', obj: 'you', adj: 'your', pron: 'yours' },
+            { person: '第三人稱單數(男)', sub: 'He', obj: 'him', adj: 'his', pron: 'his' },
+            { person: '第三人稱單數(女)', sub: 'She', obj: 'her', adj: 'her', pron: 'hers' },
+            { person: '第三人稱單數(物)', sub: 'It', obj: 'it', adj: 'its', pron: 'its' },
+            { person: '第一人稱複數', sub: 'We', obj: 'us', adj: 'our', pron: 'ours' },
+            { person: '第二人稱複數', sub: 'You', obj: 'you', adj: 'your', pron: 'yours' },
+            { person: '第三人稱複數', sub: 'They', obj: 'them', adj: 'their', pron: 'theirs' }
+        ];
+
+        const verbs = ["like", "help", "see", "know", "call", "find", "love", "teach", "thank", "invite"];
+        const nouns = ["book", "bag", "pencil", "apple", "cat", "dog", "sister", "brother", "friend", "teacher"];
+
+        let questions = [];
+        let userResponses = new Array(100).fill(null);
+        let currentIndex = 0;
+
+        function init() {
+            generateUniqueQuestions();
+            renderMap();
+            renderQuiz();
+        }
+
+        // 確保 100 題完全不重複的產生器
+        function generateUniqueQuestions() {
+            const types = ['sub', 'obj', 'adj', 'pron'];
+            let count = 0;
+            
+            // 系統化地組合所有變數，確保不重複
+            for (let i = 0; i < pronounData.length; i++) { // 8
+                for (let j = 0; j < types.length; j++) { // 4
+                    for (let k = 0; k < 3; k++) { // 3 (重複三次不同的動詞或名詞組合)
+                        if (count >= 100) break;
+                        
+                        const row = pronounData[i];
+                        const type = types[j];
+                        const v = verbs[(i + j + k) % verbs.length];
+                        const n = nouns[(i * j + k) % nouns.length];
+                        
+                        let qText, correct, hint;
+                        if (type === 'sub') {
+                            qText = `(提示：${row.person}) ______ ${v}s the ${n}.`;
+                            correct = row.sub; hint = `主格當句子的主詞，放在動詞前面。`;
+                        } else if (type === 'obj') {
+                            qText = `The ${n} belongs to (提示：${row.person}) ______.`;
+                            correct = row.obj; hint = `受格放在介系詞 (to, for, with) 之後。`;
+                        } else if (type === 'adj') {
+                            qText = `Is that (提示：${row.person}) ______ ${n}?`;
+                            correct = row.adj; hint = `所有格形容詞後面一定要接一個名詞。`;
+                        } else {
+                            qText = `This ${n} is (提示：${row.person}) ______.`;
+                            correct = row.pron; hint = `所有格代名詞等於「所有格+名詞」，後面不接名詞。`;
+                        }
+
+                        let opts = [correct, "me", "their", "his", "yours", "us", "it", "them"].filter((v, i, a) => a.indexOf(v) === i);
+                        opts = opts.filter(o => o !== correct).slice(0, 3);
+                        opts.push(correct);
+                        opts.sort(() => Math.random() - 0.5);
+
+                        questions.push({ q: qText, opts: opts, a: opts.indexOf(correct), hint: hint });
+                        count++;
+                    }
+                }
+            }
+            // 隨機打亂，讓學生感覺不到規律
+            questions.sort(() => Math.random() - 0.5);
+        }
+
+        function renderMap() {
+            const mapGrid = document.getElementById('world-map');
+            mapGrid.innerHTML = regions.map((r, i) => `
+                <div class="map-node ${Math.floor(currentIndex / 10) === i ? 'active' : ''}" id="node-${i}">
+                    <div class="node-icon">
+                        <span class="text-xl">${r.emoji}</span>
+                    </div>
+                    <p class="text-[10px] font-black mt-2 text-gray-500 uppercase tracking-tighter">${r.name}</p>
+                    ${i < 9 ? '<div class="map-line"></div>' : ''}
+                </div>
+            `).join('');
+        }
+
+        function renderQuiz() {
+            const wrapper = document.getElementById('quiz-wrapper');
+            const q = questions[currentIndex];
+            const response = userResponses[currentIndex];
+            const regionIndex = Math.floor(currentIndex / 10);
+            const region = regions[regionIndex];
+
+            // 更新怪獸與進度資訊
+            document.getElementById('monster-emoji').innerText = region.emoji;
+            document.getElementById('monster-name').innerText = region.boss;
+            const currentLevelProgress = currentIndex % 10;
+            const hpPercent = 100 - (currentLevelProgress * 10);
+            document.getElementById('hp-fill').style.width = `${hpPercent}%`;
+            document.getElementById('hp-text').innerText = `${10 - currentLevelProgress} / 10`;
+            document.getElementById('progress-text').innerText = `${currentIndex + 1}/100`;
+
+            renderMap();
+            updateRank();
+
+            // 更新下方分頁點
+            const dotsHtml = Array.from({length: 10}).map((_, i) => {
+                const globalIndex = regionIndex * 10 + i;
+                const res = userResponses[globalIndex];
+                let color = "bg-slate-700";
+                if (globalIndex === currentIndex) color = "bg-yellow-400 scale-150 shadow-[0_0_10px_rgba(236,201,75,0.8)]";
+                else if (res && res.isCorrect) color = "bg-green-500";
+                else if (res && !res.isCorrect) color = "bg-red-500";
+                return `<div class="w-2.5 h-2.5 rounded-full transition-all duration-300 ${color}"></div>`;
+            }).join('');
+            document.getElementById('pagination-dots').innerHTML = dotsHtml;
+
+            let html = `
+                <div class="quiz-card p-10 md:p-14 animate-in fade-in slide-in-from-bottom-8">
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="h-1 flex-grow bg-white/5 rounded-full">
+                            <div class="h-full bg-yellow-400/50 rounded-full" style="width: ${(currentIndex + 1)}%"></div>
+                        </div>
+                    </div>
+                    <h3 class="text-3xl md:text-4xl font-bold mb-12 leading-relaxed text-white drop-shadow-lg">${q.q}</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            `;
+
+            q.opts.forEach((opt, idx) => {
+                let status = "";
+                if (response !== null) {
+                    if (idx === q.a) status = "option-correct";
+                    else if (idx === response.selectedIdx && !response.isCorrect) status = "option-wrong";
+                }
+
+                html += `
+                    <button onclick="handleSelect(${idx}, this)" 
+                            ${response !== null ? 'disabled' : ''}
+                            class="option-btn p-7 rounded-3xl text-left text-2xl font-bold flex justify-between items-center group ${status}">
+                        <span><span class="opacity-20 mr-3 text-lg">${String.fromCharCode(65 + idx)}</span> ${opt}</span>
+                        <i class="fas fa-bolt opacity-0 group-hover:opacity-100 transition-opacity text-yellow-400"></i>
+                    </button>
+                `;
+            });
+
+            html += `</div>`;
+
+            if (response !== null) {
+                html += `
+                    <div class="mt-10 p-8 bg-white/5 rounded-[2rem] border border-white/10 flex flex-col md:flex-row items-center gap-6 animate-in zoom-in-95 duration-300">
+                        <div class="flex gap-4 items-start flex-grow">
+                            <i class="fas fa-scroll text-yellow-400 text-3xl pt-1"></i>
+                            <div>
+                                <p class="font-black text-yellow-400 text-lg mb-1 uppercase tracking-tighter">智慧解析</p>
+                                <p class="text-gray-200 text-xl leading-relaxed">${q.hint}</p>
+                            </div>
+                        </div>
+                        <button onclick="nextQuestion()" class="next-btn-glow bg-yellow-400 text-blue-950 px-12 py-5 rounded-2xl font-black text-xl hover:bg-yellow-300 transition-all flex items-center gap-3 whitespace-nowrap">
+                            ${currentIndex === 99 ? '完成修煉' : '繼續挑戰'} <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                `;
+            }
+
+            html += `</div>`;
+            wrapper.innerHTML = html;
+        }
+
+        function handleSelect(idx, btn) {
+            const q = questions[currentIndex];
+            const isCorrect = (idx === q.a);
+            userResponses[currentIndex] = { selectedIdx: idx, isCorrect: isCorrect };
+
+            if (isCorrect) {
+                attackEffect(btn);
+            }
+            renderQuiz();
+            updateStats();
+        }
+
+        function nextQuestion() {
+            if (currentIndex < 99) {
+                currentIndex++;
+                renderQuiz();
+                // 自動捲動到題目開始位置
+                document.getElementById('quiz-anchor').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                updateStats(); // 觸發結算
+            }
+        }
+
+        function updateRank() {
+            const correct = userResponses.filter(r => r && r.isCorrect).length;
+            let rank = "初級學徒";
+            if (currentIndex > 90) rank = "傳奇大魔導";
+            else if (currentIndex > 70) rank = "大賢者";
+            else if (currentIndex > 50) rank = "皇家法師";
+            else if (currentIndex > 30) rank = "進階法師";
+            else if (currentIndex > 10) rank = "見習元素使";
+            
+            document.getElementById('player-rank').innerText = rank;
+            document.getElementById('total-xp').innerText = `${correct * 20} XP`;
+        }
+
+        function updateStats() {
+            const correctCount = userResponses.filter(r => r && r.isCorrect).length;
+            const answeredCount = userResponses.filter(r => r !== null).length;
+            
+            if (answeredCount === 100) {
+                const modal = document.getElementById('celebration-modal');
+                document.getElementById('final-stats').innerHTML = `
+                    <p class="text-3xl font-black text-white mb-3">冒險成功率：${correctCount}%</p>
+                    <p class="text-xl text-yellow-400 font-bold uppercase tracking-widest">總獲取經驗值：${correctCount * 20} XP</p>
+                `;
+                modal.classList.remove('hidden');
+            }
+        }
+
+        function attackEffect(el) {
+            const rect = el.getBoundingClientRect();
+            for (let i = 0; i < 20; i++) {
+                const s = document.createElement('div');
+                s.className = 'sparkle';
+                const tx = (Math.random() - 0.5) * 450;
+                const ty = (Math.random() - 0.5) * 450;
+                s.style.setProperty('--tx', `${tx}px`);
+                s.style.setProperty('--ty', `${ty}px`);
+                s.style.left = `${rect.left + rect.width / 2}px`;
+                s.style.top = `${rect.top + rect.height / 2 + window.scrollY}px`;
+                s.style.width = Math.random() * 12 + 6 + 'px';
+                s.style.height = s.style.width;
+                s.style.background = `hsl(${Math.random() * 50 + 40}, 100%, 65%)`;
+                document.body.appendChild(s);
+                setTimeout(() => s.remove(), 800);
+            }
+        }
+
+        function toggleMistakeSummary() {
+            const sec = document.getElementById('mistake-section');
+            sec.classList.toggle('hidden');
+            if(!sec.classList.contains('hidden')) {
+                const list = document.getElementById('mistake-list');
+                const mistakes = userResponses.map((r, i) => r && !r.isCorrect ? i : null).filter(i => i !== null);
+                
+                if (mistakes.length === 0) {
+                    list.innerHTML = '<p class="text-center text-gray-500 py-20 text-xl font-bold">當前區域無弱點，繼續保持戰鬥！</p>';
+                } else {
+                    list.innerHTML = mistakes.map(idx => `
+                        <div class="mistake-item bg-white/5 border border-white/10 p-8 rounded-[2rem] shadow-xl">
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="text-red-400 font-black text-lg tracking-widest uppercase italic">Challenge Failed #${idx + 1}</span>
+                                <button onclick="currentIndex=${idx}; toggleMistakeSummary(); renderQuiz();" class="text-sm bg-red-500/20 text-red-200 px-6 py-2 rounded-xl hover:bg-red-500/40 transition-all font-bold">重新挑戰</button>
+                            </div>
+                            <p class="text-2xl font-bold mb-5 text-white">${questions[idx].q}</p>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-red-500/10 p-3 rounded-xl border border-red-500/20">
+                                    <p class="text-[10px] text-red-400 font-black">你的選擇</p>
+                                    <p class="font-bold">${questions[idx].opts[userResponses[idx].selectedIdx]}</p>
+                                </div>
+                                <div class="bg-green-500/10 p-3 rounded-xl border border-green-500/20">
+                                    <p class="text-[10px] text-green-400 font-black">正確解答</p>
+                                    <p class="font-bold">${questions[idx].opts[questions[idx].a]}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+                sec.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
