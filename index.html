@@ -3,60 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>金名文理 | 升私中英文特訓總目錄</title>
+    <title>金名魔法學院 | 升私中英文特訓總目錄</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Noto Sans TC', sans-serif;
-            background-color: #f8fafc;
+            background-color: #f1f5f9;
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .lesson-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .lesson-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
-        .gradient-bg {
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+        .magic-gradient {
+            background: linear-gradient(135deg, #1e1b4b 0%, #4338ca 50%, #7e22ce 100%);
+        }
+        .magic-card {
+            border: 2px solid #e9d5ff;
+            background: linear-gradient(to bottom right, #ffffff, #faf5ff);
+        }
+        .magic-card:hover {
+            border-color: #a855f7;
+            background: linear-gradient(to bottom right, #ffffff, #f3e8ff);
+        }
+        .sparkle {
+            animation: sparkle-anim 2s infinite ease-in-out;
+        }
+        @keyframes sparkle-anim {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        .magic-text {
+            background: linear-gradient(to right, #6366f1, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
     </style>
 </head>
 <body class="min-h-screen pb-20">
 
     <!-- Header -->
-    <header class="gradient-bg text-white py-12 px-6 shadow-lg mb-10">
-        <div class="max-w-5xl mx-auto text-center">
-            <h1 class="text-3xl md:text-4xl font-bold mb-4">升私中英文特訓班</h1>
-            <p class="text-blue-100 text-lg">全系列課程學習總目錄</p>
-            <div class="mt-6 inline-block bg-white/20 px-4 py-2 rounded-full text-sm backdrop-blur-sm">
-                金名文理補習班 專用教材
+    <header class="magic-gradient text-white py-16 px-6 shadow-2xl mb-12 relative overflow-hidden">
+        <!-- 魔法裝飾元素 -->
+        <div class="absolute top-10 left-10 w-4 h-4 bg-yellow-300 rounded-full sparkle opacity-50"></div>
+        <div class="absolute bottom-10 right-20 w-3 h-3 bg-blue-300 rounded-full sparkle opacity-40" style="animation-delay: 1s;"></div>
+        <div class="absolute top-20 right-1/4 w-2 h-2 bg-purple-300 rounded-full sparkle opacity-60" style="animation-delay: 0.5s;"></div>
+        
+        <div class="max-w-5xl mx-auto text-center relative z-10">
+            <div class="inline-block mb-4 animate-bounce">
+                <span class="text-5xl">✨</span>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-black mb-4 tracking-wider">金名魔法學院</h1>
+            <p class="text-purple-100 text-xl font-medium opacity-90 italic">升私中英文特訓 · 魔法全書目錄</p>
+            <div class="mt-8 inline-flex items-center bg-white/10 px-6 py-2 rounded-full text-sm backdrop-blur-md border border-white/20">
+                <span class="mr-2">🔮</span> 專屬學員特訓教材
             </div>
         </div>
     </header>
 
-    <main class="max-w-6xl mx-auto px-4">
+    <main class="max-w-7xl mx-auto px-6">
         
         <!-- 文法篇 -->
-        <section class="mb-16">
-            <div class="flex items-center mb-8 border-l-8 border-blue-600 pl-4">
-                <h2 class="text-2xl font-bold text-gray-800">文法篇 (Grammar)</h2>
-                <span class="ml-4 text-gray-500 font-medium">共 20 課</span>
+        <section class="mb-20">
+            <div class="flex items-center mb-10 border-l-8 border-indigo-600 pl-6">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-800">文法魔法卷軸 (Grammar)</h2>
+                    <p class="text-gray-500 mt-1">掌握 20 核心咒語，橫掃私中考場</p>
+                </div>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- 第一課 (已更新標題) -->
-                <a href="lesson1/index.html" class="lesson-card bg-white p-6 rounded-xl border border-blue-200 shadow-sm transition-all duration-300 block ring-1 ring-blue-50">
-                    <div class="flex justify-between items-start mb-3">
-                        <span class="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">文法 1</span>
-                        <span class="text-green-600 text-xs font-bold bg-green-50 px-2 py-1 rounded">已上線</span>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 第一課 (維持原樣作為對照) -->
+                <a href="lesson1/index.html" class="lesson-card bg-white p-8 rounded-2xl border-2 border-blue-200 shadow-md block relative overflow-hidden group">
+                    <div class="absolute -right-4 -top-4 bg-blue-500 text-white w-16 h-16 rounded-full flex items-center justify-center pt-3 pr-3 font-bold group-hover:bg-blue-600 transition-colors">
+                        GO
                     </div>
-                    <div class="text-gray-800 font-bold text-lg mb-4 leading-relaxed">人稱代名詞 主格與所有格：<br><span class="text-blue-600">金名升私中英文魔法全書</span></div>
-                    <div class="text-blue-500 text-sm font-medium flex items-center pt-2 border-t border-gray-50">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest">Grammar 01</span>
+                        <span class="text-green-600 text-xs font-bold bg-green-50 px-3 py-1 rounded-full ring-1 ring-green-200">封印解除</span>
+                    </div>
+                    <h3 class="text-gray-800 font-bold text-xl mb-4 leading-relaxed">
+                        人稱代名詞 主格與所有格：<br>
+                        <span class="text-blue-600">金名升私中英文魔法全書</span>
+                    </h3>
+                    <div class="text-blue-500 text-sm font-bold flex items-center pt-4 border-t border-gray-100">
                         <span>進入課程學習</span>
-                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        <svg class="w-5 h-5 ml-2 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7M3 12h18"></path></svg>
                     </div>
                 </a>
 
-                <!-- 預留位置範例 -->
+                <!-- 其餘文法課由 JS 生成 -->
                 <script>
                     const grammarLessons = [
                         "be 動詞直述句與疑問句", "Who 的問答句", "指示代名詞 this, that, these, those",
@@ -68,14 +109,22 @@
                     ];
                     grammarLessons.forEach((title, index) => {
                         document.write(`
-                            <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 opacity-60">
-                                <div class="text-gray-400 font-bold text-xs mb-2">文法 ${index + 2}</div>
-                                <div class="text-gray-500 font-bold text-lg mb-4">${title}</div>
-                                <div class="mt-2 text-gray-400 text-xs flex items-center italic">
-                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                    製作中...
+                            <a href="https://mocher235-byte.github.io/exam/" target="_blank" class="lesson-card magic-card p-8 rounded-2xl shadow-sm block group relative">
+                                <div class="flex justify-between items-start mb-4">
+                                    <span class="bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest">Grammar ${String(index + 2).padStart(2, '0')}</span>
+                                    <span class="text-purple-500 text-xs font-bold bg-purple-50 px-3 py-1 rounded-full ring-1 ring-purple-100">魔法隱蔽中</span>
                                 </div>
-                            </div>
+                                <h3 class="text-gray-800 font-bold text-xl mb-4 leading-relaxed group-hover:text-purple-700 transition-colors">
+                                    ${title}<br>
+                                    <span class="magic-text">金名升私中英文魔法全書</span>
+                                </h3>
+                                <div class="text-purple-500 text-sm font-bold flex items-center pt-4 border-t border-purple-100/50">
+                                    <span>進入課程學習 (魔法隱蔽術)</span>
+                                    <svg class="w-5 h-5 ml-2 opacity-50 group-hover:opacity-100 group-hover:translate-x-2 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                </div>
+                                <!-- 魔法裝飾點 -->
+                                <div class="absolute bottom-4 right-4 text-2xl opacity-10 group-hover:opacity-30 transition-opacity">🔮</div>
+                            </a>
                         `);
                     });
                 </script>
@@ -84,12 +133,14 @@
 
         <!-- 單字篇 -->
         <section>
-            <div class="flex items-center mb-8 border-l-8 border-green-600 pl-4">
-                <h2 class="text-2xl font-bold text-gray-800">單字篇 (Vocabulary)</h2>
-                <span class="ml-4 text-gray-500 font-medium">共 10 課</span>
+            <div class="flex items-center mb-10 border-l-8 border-amber-500 pl-6">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-800">單字魔法庫 (Vocabulary)</h2>
+                    <p class="text-gray-500 mt-1">積累魔法能量，豐富表達之泉</p>
+                </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <script>
                     const vocabLessons = [
                         "人物、家庭、職業", "身體五官、動物、顏色", "學校、嗜好", "時間",
@@ -98,11 +149,17 @@
                     ];
                     vocabLessons.forEach((title, index) => {
                         document.write(`
-                            <div class="bg-white p-5 rounded-xl border border-green-100 opacity-60">
-                                <div class="text-green-600 font-bold text-sm mb-1">單字 ${index + 1}</div>
-                                <div class="text-gray-800 font-bold text-lg">${title}</div>
-                                <div class="mt-2 text-gray-400 text-xs font-medium italic">製作中...</div>
-                            </div>
+                            <a href="https://mocher235-byte.github.io/exam/" target="_blank" class="lesson-card bg-white p-6 rounded-xl border-2 border-amber-100 shadow-sm block group hover:border-amber-400">
+                                <div class="flex justify-between items-center mb-3">
+                                    <span class="text-amber-600 font-black text-xs uppercase">Vocab ${index + 1}</span>
+                                    <span class="text-[10px] bg-amber-50 text-amber-600 px-2 py-0.5 rounded border border-amber-200">魔法隱蔽</span>
+                                </div>
+                                <div class="text-gray-800 font-bold text-lg mb-2">${title}</div>
+                                <div class="text-amber-500 text-[11px] font-bold py-2 border-t border-amber-50 mt-2 flex items-center justify-between">
+                                    <span>魔法全書系列</span>
+                                    <span class="opacity-0 group-hover:opacity-100 transition-opacity">✨</span>
+                                </div>
+                            </a>
                         `);
                     });
                 </script>
@@ -111,9 +168,14 @@
 
     </main>
 
-    <footer class="mt-20 py-10 bg-gray-100 text-center text-gray-500 text-sm">
-        <p class="font-bold text-gray-600 mb-1">金名文理補習班 專業教學團隊</p>
-        <p>&copy; 2026 Jin Ming Cram School. All Rights Reserved.</p>
+    <footer class="mt-32 py-16 bg-indigo-950 text-center text-indigo-200">
+        <div class="max-w-2xl mx-auto px-6">
+            <div class="text-3xl mb-6">🎓</div>
+            <p class="font-bold text-white text-xl mb-2">金名文理補習班 · 魔法教學團隊</p>
+            <p class="text-indigo-400 text-sm mb-8 italic">"知識就是最強大的咒語"</p>
+            <div class="h-px bg-white/10 w-full mb-8"></div>
+            <p class="text-xs opacity-50">&copy; 2026 Jin Ming Magic Academy. All Rights Reserved.</p>
+        </div>
     </footer>
 
 </body>
